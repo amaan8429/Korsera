@@ -1,24 +1,45 @@
 {
-  "name": "Korsera",
+  "name": "korsera",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.7",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-select": "^2.0.0",
+    "@radix-ui/react-slot": "^1.0.2",
+    "axios": "^1.6.7",
+    "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.321.0",
+    "mongoose": "^8.1.1",
+    "next": "14.1.0",
+    "next-auth": "^4.24.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.50.0",
+    "react-hot-toast": "^2.4.1",
+    "recoil": "^0.7.7",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
-    "prettier": "^3.1.1",
-    "turbo": "latest"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "npm@10.3.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
 }
