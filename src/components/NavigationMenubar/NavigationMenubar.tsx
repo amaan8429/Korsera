@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const menuItems = [
   {
