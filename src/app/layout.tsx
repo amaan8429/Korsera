@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavigationMenubar from "@/components/NavigationMenubar/NavigationMenubar";
 import ToasterContext from "@/context/ToasterContext";
-import SessionProvider from "@/context/AuthContext";
-import { getServerSession } from "next-auth";
-import { OPTIONS } from "@/app/api/auth/[...nextauth]/route";
+import AuthProvider from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Korsera",
@@ -16,15 +14,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(OPTIONS);
   return (
     <html lang="en">
-      <body className="bg-slate-50">
-        <SessionProvider session={session}>
+      <body className="bg-slate-50" suppressHydrationWarning>
+        <AuthProvider>
           <NavigationMenubar />
           {children}
           <ToasterContext />
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,36 +1,35 @@
-import { Admin, Course } from "@/db";
+import { Course, User } from "@/db";
 import { ensureDbConnected } from "@/db/dbConnect";
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest } from "next";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextApiRequest) {
   try {
     await ensureDbConnected();
+
     if (!req.body) return null;
 
-    const reqBody = await req.json();
+    const { username, role } = req.body;
 
-    const { username, password, role } = reqBody;
-
-    if (!username || !password || role !== "admin") {
+    if (!username || role !== "user") {
       return NextResponse.json({
-        message: "Invalid input",
+        message: "Invalid Username or Role",
         success: false,
         status: 400,
       });
     }
 
+    const user = await User.findOne({ username });
+    if (!user) {
+      return NextResponse.json({
+        message: "User not found",
+        success: false,
+        status: 400,
+      });
+    }
     const COURSES = [];
-    const admin = await Admin.findOne({ username });
-    if (!admin) {
-      return NextResponse.json({
-        message: "Admin not found",
-        success: false,
-        status: 400,
-      });
-    }
-
-    for (let i = 0; i < admin.courses.length; i++) {
-      const id = admin.courses[i]._id;
+    for (let i = 0; i < user.purchasedCourses.length; i++) {
+      const id = user.purchasedCourses[i]._id;
       const course = await Course.findById(id);
       COURSES.push(course);
     }
