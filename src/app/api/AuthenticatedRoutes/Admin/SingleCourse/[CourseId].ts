@@ -1,34 +1,34 @@
-import { Course } from "@/db";
-import { ensureDbConnected } from "@/db/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import Course from "@/modals/Course";
+import dbConnect from "@/dbConnect/dbConnect";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
+
   try {
-    await ensureDbConnected();
-    const { CourseId } = req.query as { CourseId: string };
+    await dbConnect();
+    const CourseId = req.query.CourseId as string;
 
     const course = await Course.findById(CourseId);
     if (course) {
-      NextResponse.json({
+      res.status(200).json({
         message: "Course fetched successfully",
         success: true,
-        status: 200,
         data: course,
       });
     } else {
-      return NextResponse.json({
+      res.status(404).json({
         message: "Course not found",
         success: false,
-        status: 400,
       });
     }
   } catch (error) {
     console.error("Error in fetching course:", error);
-    return NextResponse.json({
+    res.status(500).json({
       message: "Internal server error",
       success: false,
-      status: 500,
     });
   }
 }

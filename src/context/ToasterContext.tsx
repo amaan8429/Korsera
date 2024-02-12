@@ -11,6 +11,7 @@ export default function ToasterContext() {
         containerClassName=""
         containerStyle={{}}
         toastOptions={{
+          // Define default options
           className: "",
           duration: 10000,
           style: {},

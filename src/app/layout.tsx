@@ -1,27 +1,41 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
-import NavigationMenubar from "@/components/NavigationMenubar/NavigationMenubar";
+import NavigationMenubar from "@/components/ui/NavigationMenubar/NavigationMenubar";
 import ToasterContext from "@/context/ToasterContext";
-import AuthProvider from "@/context/AuthContext";
+import SessionProvider from "@/context/AuthContext";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
+import { ThemeProvider } from "@/context/themeprovider";
 
 export const metadata: Metadata = {
-  title: "Korsera",
-  description: "A Coursera clone",
+  title: "NEXT AUTH COMPLETE TUTORIAL",
+  description: "-",
 };
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
-      <body className="bg-slate-50" suppressHydrationWarning>
-        <AuthProvider>
-          <NavigationMenubar />
-          {children}
-          <ToasterContext />
-        </AuthProvider>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider session={session}>
+            <NavigationMenubar />
+
+            {children}
+            <ToasterContext />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

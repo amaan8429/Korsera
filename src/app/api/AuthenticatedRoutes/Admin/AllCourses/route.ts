@@ -1,17 +1,25 @@
-import { Admin, Course } from "@/db";
-import { ensureDbConnected } from "@/db/dbConnect";
+import dbConnect from "@/dbConnect/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
+import Admin from "@/modals/Admin";
+import Course from "@/modals/Course";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    await ensureDbConnected();
-    if (!req.body) return null;
+    await dbConnect();
+    console.log(req.body);
+    if (!req.body)
+      return NextResponse.json({
+        message: "No request body found",
+        success: false,
+        status: 400,
+      });
 
     const reqBody = await req.json();
+    console.log(reqBody);
 
-    const { username, password, role } = reqBody;
+    const { email, role } = reqBody;
 
-    if (!username || !password || role !== "admin") {
+    if (!email || role !== "admin") {
       return NextResponse.json({
         message: "Invalid input",
         success: false,
@@ -20,7 +28,7 @@ export async function GET(req: NextRequest) {
     }
 
     const COURSES = [];
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({ email: email });
     if (!admin) {
       return NextResponse.json({
         message: "Admin not found",

@@ -1,12 +1,14 @@
 "use client";
-
 import React from "react";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/ui/icons";
+import { CardContent, CardFooter } from "../ui/card";
+import { Button } from "../ui/button";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "../ui/input";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -14,28 +16,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
-interface Inputs {
-  username: string;
+interface IUserRegister {
+  email: string;
   password: string;
   role: string;
 }
 
 export default function LoginForm() {
+  // To redirect user use use router
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<IUserRegister>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
-      role: "",
+      role: "user",
     },
   });
 
@@ -43,89 +44,61 @@ export default function LoginForm() {
     required: "Password is required",
     // pattern: {
     //   value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[^ ]+[A-Za-z\d@$!%*?&]*$/,
-    //   message:
-    //     "Password must contain at least one letter, one number, and one special character and should not contain spaces",
+    //   message: "Password must contain at least one letter, one number, and one special character and should not contain spaces",
     // },
   });
 
-  const handleSubmitForm = async (data: Inputs) => {
-    const toaster = toast.loading("Loggging in...");
-    //toaster start
+  register("email", {
+    required: "Email address is required",
+    pattern: {
+      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      message: "Invalid email address format",
+    },
+  });
+
+  const handleSubmitForm = async (data: IUserRegister) => {
+    // toast loading
+    const toastLoading = toast.loading("processing...");
     try {
-      console.log(data);
-      const res = await signIn("credentials", {
-        username: data.username,
+      const response = await signIn("credentials", {
+        email: data.email,
         password: data.password,
         role: data.role,
         redirect: false,
       });
-      console.log(res);
-      //toaster success
-      if (res?.ok) {
-        toast.success("Login successful");
-        if (data.role === "admin") {
-          router.push("/ad/dashboard");
-          router.refresh();
-        } else {
-          router.push("/us/dashboard");
-          router.refresh();
-        }
-      } else {
-        toast.error("Login failed");
-      }
-      // toast.success("Account created successfully");
+      console.log("response", response);
+      toast.success("Successfully signed in");
+      router.push("/ad/dashboard");
+
+      // toast success
     } catch (error: any) {
-      console.log(error);
-      //toaster error
-      toast.error(error);
+      // toast error
+      toast.error("Failed!", error?.message);
     } finally {
-      //toaster end
-      toast.dismiss(toaster);
+      // toast close
+      toast.dismiss(toastLoading);
     }
   };
 
   return (
-    <div>
+    <>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <CardContent className="grid gap-4">
-          <div className="grid grid-cols-2 gap-6">
-            <Button variant="outline">
-              <Icons.gitHub className="mr-2 h-4 w-4" />
-              Github
-            </Button>
-            <Button variant="outline">
-              <Icons.google className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
           <div className="grid gap-2">
-            <Label htmlFor="Username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              type="text"
-              placeholder="amaanuser"
-              {...register("username", { required: true })}
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              {...register("email")}
             />
-            {errors?.username && (
+            {errors?.email && (
               <span className="text-red-500 text-sm">
-                Username must be provided
+                {" "}
+                {errors?.email?.message}{" "}
               </span>
             )}
           </div>
-          {/* <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
-        </div> */}
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" {...register("password")} />
@@ -136,7 +109,7 @@ export default function LoginForm() {
               </span>
             )}
           </div>
-          <div className="grid gap-2" id="role">
+          <div className="grid gap-2">
             <Label htmlFor="role">Role</Label>
             <Select
               {...(register("role"), { required: true })}
@@ -159,11 +132,11 @@ export default function LoginForm() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">
+          <Button className="w-full" type="submit">
             Login
           </Button>
         </CardFooter>
       </form>
-    </div>
+    </>
   );
 }
