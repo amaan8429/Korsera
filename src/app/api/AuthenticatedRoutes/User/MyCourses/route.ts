@@ -1,3 +1,4 @@
+import { NextApiRequest } from "next";
 import Course from "@/modals/Course";
 import User from "@/modals/User";
 
@@ -38,10 +39,8 @@ export async function POST(req: NextRequest) {
       });
     }
     const COURSES = [];
-    //fetch all courses with published status true
-    const courses = await Course.find({ Published: true });
-    for (let i = 0; i < courses.length; i++) {
-      const id = courses[i]._id;
+    for (let i = 0; i < user.purchasedCourses.length; i++) {
+      const id = user.purchasedCourses[i]._id;
       const course = await Course.findById(id);
       COURSES.push(course);
     }

@@ -1,18 +1,26 @@
-import { Course, User } from "@/db";
-import { ensureDbConnected } from "@/db/dbConnect";
+import dbConnect from "@/dbConnect/dbConnect";
 import { ObjectId } from "mongoose";
 import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
+import Course from "@/modals/Course";
+import User from "@/modals/User";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: NextRequest) {
   try {
-    await ensureDbConnected();
+    await dbConnect();
 
-    const CourseId = req.query.CourseId as string;
+    if (!req.body)
+      return NextResponse.json({
+        message: "No request body found",
+        success: false,
+        status: 400,
+      });
 
-    const { username, role } = req.body;
+    const reqBody = await req.json();
 
-    if (!username || role !== "user") {
+    const { email, role, CourseId } = reqBody;
+
+    if (!email || role !== "user") {
       return NextResponse.json({
         message: "Invalid Username or Role",
         success: false,
@@ -37,7 +45,7 @@ export async function POST(req: NextApiRequest) {
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return NextResponse.json({
         message: "User not found",

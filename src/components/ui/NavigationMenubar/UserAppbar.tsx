@@ -9,7 +9,6 @@ export default function UserAppbar() {
   const router = useRouter();
   return (
     <div
-      className="bg-zinc-900"
       style={{
         display: "flex",
         flexDirection: "row",
@@ -33,10 +32,10 @@ export default function UserAppbar() {
       </div>
       <div style={{ display: "flex", flexDirection: "row", gap: "4px" }}>
         <Button
-          size="sm"
+          size="default"
           variant="default"
           onClick={() => {
-            router.push("/ad/my_courses");
+            router.push("/us/my_courses");
           }}
         >
           My Courses

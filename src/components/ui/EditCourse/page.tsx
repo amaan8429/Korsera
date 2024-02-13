@@ -11,8 +11,18 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-export default function EditCourseComponet({ CourseId }: { CourseId: string }) {
+export default function EditCourseComponet({
+  CourseId,
+  email,
+  roll,
+}: {
+  CourseId: string;
+  email: string;
+  roll: string;
+}) {
+  const router = useRouter();
   const [Title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [Price, setPrice] = useState("");
@@ -21,31 +31,45 @@ export default function EditCourseComponet({ CourseId }: { CourseId: string }) {
 
   useEffect(() => {
     const fetchCourse = async () => {
-      const response = await axios.get(
-        `/api/AuthenticatedRoutes/Admin/SingleCourse/${CourseId}`
-      );
-      console.log("response", response);
-      if (response.data.success) {
-        setTitle(response.data.data.Title);
-        setDescription(response.data.data.Description);
-        setPrice(response.data.data.Price);
-        setImageLink(response.data.data.ImageLink);
-        setPublished(response.data.data.Published);
+      const data = {
+        CourseId: CourseId,
+      };
+      try {
+        const response = await axios.post(
+          "/api/AuthenticatedRoutes/Admin/SingleCourse",
+          data
+        );
+        if (response.data.success) {
+          setTitle(response.data.data.Title);
+          setDescription(response.data.data.Description);
+          setPrice(response.data.data.Price);
+          setImageLink(response.data.data.ImageLink);
+          setPublished(response.data.data.Published);
+        }
+        console.log("response", response);
+      } catch (error) {
+        console.error("Error fetching course:", error);
       }
     };
     fetchCourse();
   }, [CourseId]);
 
-  const handleSaveChanges = async () => {
-    const responsefromedit = await axios.post(
-      `/api/AuthenticatedRoutes/Admin/EditCourse/${CourseId}`,
+  const handleSaveChanges = async (e: any, role: string, email: string) => {
+    e.preventDefault();
+    console.log("handleSaveChanges");
+    const responsefromedit = await axios.put(
+      "/api/AuthenticatedRoutes/Admin/EditCourse",
       {
         CourseId,
-        Title,
-        Description,
-        Price,
-        Imagelink,
-        Published,
+        email: email,
+        role: role,
+        course: {
+          Title,
+          Description,
+          Price,
+          ImageLink: Imagelink,
+          Published,
+        },
       }
     );
     console.log("responsefromedit", responsefromedit);
@@ -118,7 +142,7 @@ export default function EditCourseComponet({ CourseId }: { CourseId: string }) {
               <Button
                 variant="default"
                 color="primary"
-                onClick={handleSaveChanges}
+                onClick={(e) => handleSaveChanges(e, roll, email)}
               >
                 Save Changes
               </Button>

@@ -1,25 +1,31 @@
-import { Course, User } from "@/db";
-import { ensureDbConnected } from "@/db/dbConnect";
-import { NextApiRequest } from "next";
+import dbConnect from "@/dbConnect/dbConnect";
+import { NextRequest } from "next/server";
+import Course from "@/modals/Course";
+import User from "@/modals/User";
 import { NextResponse } from "next/server";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   try {
-    await ensureDbConnected();
+    await dbConnect();
 
-    if (!req.body) return null;
+    if (!req.body)
+      return NextResponse.json({
+        message: "No request body found",
+        success: false,
+        status: 400,
+      });
 
-    const { username, role } = req.body;
+    const reqBody = await req.json();
 
-    if (!username || role !== "user") {
+    const { email, role, CourseId } = reqBody;
+
+    if (!email || role !== "user") {
       return NextResponse.json({
         message: "Invalid Username or Role",
         success: false,
         status: 400,
       });
     }
-
-    const CourseId = req.query.CourseId as string;
 
     if (!CourseId) {
       return NextResponse.json({
@@ -38,7 +44,7 @@ export async function GET(req: NextApiRequest) {
         data: course,
       });
 
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return NextResponse.json({
           message: "User not found",

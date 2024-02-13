@@ -2,18 +2,21 @@ import dbConnect from "@/dbConnect/dbConnect";
 import { NextApiRequest } from "next";
 import Admin from "@/modals/Admin";
 import Course from "@/modals/Course";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextApiRequest) {
+export async function PUT(req: NextRequest) {
   try {
     await dbConnect();
-    if (!req.body) return null;
+    if (!req.body)
+      return NextResponse.json({
+        message: "No request body found",
+        success: false,
+        status: 400,
+      });
 
-    const CourseId = req.query.CourseId as string;
+    const reqBody = await req.json();
 
-    const reqBody = await req.body;
-
-    const { email, role, course } = reqBody;
+    const { CourseId, email, role, course } = reqBody;
 
     if (!email || role !== "admin" || !course || !CourseId) {
       return NextResponse.json({

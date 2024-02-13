@@ -2,21 +2,17 @@
 
 import React from "react";
 import { useSession } from "next-auth/react";
-import EditCourseComponet from "@/components/ui/EditCourse/page";
+import MyPurchasedCoursesComponent from "@/components/ui/MyPurchasedCourses/page";
 
-export default function EditCourse({
-  params,
-}: {
-  params: { CourseId: string };
-}) {
+export default function DashboardPage() {
   const { data: session } = useSession();
   if (session && session.user && session.user.email) {
     console.log("verified");
     return (
-      <EditCourseComponet
+      <MyPurchasedCoursesComponent
+        name={session.user.name || "AnonymousUser"}
         email={session.user.email}
-        roll="admin"
-        CourseId={params.CourseId}
+        roll="user"
       />
     );
   }
