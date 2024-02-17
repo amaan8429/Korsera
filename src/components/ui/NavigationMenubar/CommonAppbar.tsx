@@ -1,7 +1,6 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
 import Link from "next/link";
-import { ModeToggle } from "../themetogge";
 import { Button } from "@/components/ui/button";
 
 export default function CommonAppbar() {
@@ -9,6 +8,7 @@ export default function CommonAppbar() {
   return (
     <Grid
       container
+      bgcolor={"#000"}
       justifyContent={"space-between"}
       alignItems={"center"}
       style={{
@@ -23,12 +23,15 @@ export default function CommonAppbar() {
         </Typography>
       </Grid>
       <Grid style={{ display: "flex", flexDirection: "row", gap: "4px" }}>
-        <ModeToggle />
         <Link href="/register">
-          <Button variant="default">User SignUp</Button>
+          <Button size="lg" variant="default">
+            SignUp
+          </Button>
         </Link>
         <Link href="/login">
-          <Button variant="default">User Login</Button>
+          <Button size="lg" variant="default">
+            Login
+          </Button>
         </Link>
       </Grid>
     </Grid>

@@ -1,9 +1,9 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
-import CourseNotBought from "./CourseNotBought";
+import React, { useEffect, useState } from "react";
 import CourseBought from "./CourseBought";
+import CourseNotBought from "./CourseNotBought";
 
 interface course {
   _id: string;
@@ -62,9 +62,24 @@ export default function SingleCourseComponent({
     handler();
   }, [email, role, CourseId]);
 
-  if (bought == false) {
-    return <CourseNotBought course={course} />;
-  } else if (bought == true) {
-    return <CourseBought course={course} CourseId={CourseId} />;
+  if (bought == false && course) {
+    return (
+      <CourseNotBought
+        course={course}
+        CourseId={CourseId}
+        email={email}
+        role={role}
+      />
+    );
+  } else if (bought == true && course) {
+    return (
+      <CourseBought
+        course={course}
+        CourseId={CourseId}
+        email={email}
+        role={role}
+      />
+    );
   }
+  return <div>Loading...</div>;
 }

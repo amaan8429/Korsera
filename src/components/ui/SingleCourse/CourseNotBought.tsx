@@ -1,10 +1,12 @@
 "use client";
+
 import React from "react";
 import { Card, CardMedia, Grid, Typography } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
-export default function CourseNotBought(
+interface CourseNotBoughtProps {
   course: {
     _id: string;
     Title: string;
@@ -12,9 +14,20 @@ export default function CourseNotBought(
     Price: number;
     ImageLink: string;
     Published: boolean;
-  },
-  courseId: string
-) {
+  };
+  CourseId: string;
+  email: string;
+  role: string;
+}
+
+const CourseNotBought: React.FC<CourseNotBoughtProps> = ({
+  course,
+  CourseId,
+  email,
+  role,
+}) => {
+  const router = useRouter();
+
   return (
     <>
       <Typography
@@ -129,11 +142,12 @@ export default function CourseNotBought(
                   role: string;
                   CourseId: string;
                 }) => {
-                  const response = axios.post(
+                  const response = await axios.post(
                     "/api/AuthenticatedRoutes/User/BuyCourse",
                     data
                   );
                   console.log("response", response);
+                  alert("Course Bought Successfully");
                   router.push("/us/my_courses");
                 };
                 handler(data);
@@ -150,4 +164,6 @@ export default function CourseNotBought(
       </Grid>
     </>
   );
-}
+};
+
+export default CourseNotBought;

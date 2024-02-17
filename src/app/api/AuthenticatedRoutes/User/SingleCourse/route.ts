@@ -4,7 +4,7 @@ import Course from "@/modals/Course";
 import User from "@/modals/User";
 import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
@@ -60,14 +60,14 @@ export async function GET(req: NextRequest) {
           message: "Course is bought by user",
           success: true,
           status: 200,
-          data: { bought: true },
+          data: [course, { bought: true }],
         });
       }
       return NextResponse.json({
         message: "Course is not bought by user",
         success: true,
         status: 200,
-        data: { bought: false },
+        data: [course, { bought: false }],
       });
     } else {
       return NextResponse.json({

@@ -6,13 +6,28 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-export default function CourseBought(
-  course: any,
-  CourseId: string,
-  email: string,
-  role: string
-) {
+interface CourseBoughtProps {
+  course: {
+    _id: string;
+    Title: string;
+    Description: string;
+    Price: number;
+    ImageLink: string;
+    Published: boolean;
+  };
+  CourseId: string;
+  email: string;
+  role: string;
+}
+
+const CourseBought: React.FC<CourseBoughtProps> = ({
+  course,
+  CourseId,
+  email,
+  role,
+}) => {
   const router = useRouter();
+
   return (
     <>
       <Typography
@@ -108,32 +123,31 @@ export default function CourseBought(
               size="lg"
               color={course.Price == 0 ? "success" : "error"}
               variant="default"
-              onClick={() => {
-                console.log("View Details for course with ID:", course._id);
-                const data = {
-                  email: email,
-                  role: role,
-                  CourseId: CourseId,
-                };
-                const handler = async (data: {
-                  email: string;
-                  role: string;
-                  CourseId: string;
-                }) => {
-                  const response = axios.post(
-                    "/api/AuthenticatedRoutes/User/BuyCourse",
-                    data
-                  );
-                  console.log("response", response);
-                  router.push("/us/my_courses");
-                };
-                handler(data);
-              }}
+              // onClick={() => {
+              //   console.log("View Details for course with ID:", course._id);
+              //   const data = {
+              //     email: email,
+              //     role: role,
+              //     CourseId: CourseId,
+              //   };
+              //   const handler = async (data: {
+              //     email: string;
+              //     role: string;
+              //     CourseId: string;
+              //   }) => {
+              //     const response = axios.post(
+              //       "/api/AuthenticatedRoutes/User/BuyCourse",
+              //       data
+              //     );
+              //     console.log("response", response);
+              //   };
+              //   handler(data);
+              // }}
             >
               {course.Price === 0 ? "Free" : "Paid"}
             </Button>
             <Button size="lg" variant="default" color="primary">
-              View Course
+              Course Bought
             </Button>
           </Grid>
         </Grid>
@@ -144,4 +158,6 @@ export default function CourseBought(
       </Grid>
     </>
   );
-}
+};
+
+export default CourseBought;

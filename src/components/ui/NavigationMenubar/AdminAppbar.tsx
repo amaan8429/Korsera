@@ -32,18 +32,20 @@ export default function AdminAppbar({ name }: { name: string }) {
         </Typography>
       </div>
       <div style={{ display: "flex", flexDirection: "row", gap: "4px" }}>
-        <Typography fontWeight={"bold"} variant={"h6"}>
-          {name}
-        </Typography>
+        <Link href={"/ad/dashboard"}>
+          <Button>Dashboard</Button>
+        </Link>
         <Link href="/">
           <Button
             variant="default"
             onClick={() => {
               signOut();
+              router.push("/");
             }}
           >
             Logout
           </Button>
+          B
         </Link>
       </div>
     </div>
