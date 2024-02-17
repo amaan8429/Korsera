@@ -9,7 +9,7 @@ import { getServerSession } from "next-auth";
 import { ThemeProvider } from "@/context/themeprovider";
 
 export const metadata: Metadata = {
-  title: "NEXT AUTH COMPLETE TUTORIAL",
+  title: "Korsera",
   description: "-",
 };
 

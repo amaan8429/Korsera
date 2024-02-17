@@ -81,7 +81,7 @@ export default function RegistrationForm() {
             <Input
               id="text"
               type="name"
-              placeholder="Sandipan Das"
+              placeholder="Mohd Amaan"
               {...register("name")}
             />
             {errors?.name && (
